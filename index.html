@@ -13,6 +13,55 @@
       color: #00ff9f;
     }
 
+    /* Loading khi vào web */
+    #loading-screen {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: black;
+      z-index: 9999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    #loading-screen img {
+      width: 120px;
+      animation: wave 2s infinite ease-in-out;
+      margin-bottom: 20px;
+    }
+
+    @keyframes wave {
+      0%, 100% { transform: rotateZ(0deg); }
+      50% { transform: rotateZ(5deg); }
+    }
+
+    .loading-bar {
+      width: 200px;
+      height: 10px;
+      background: #222;
+      border: 1px solid #00ff9f;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .loading-bar::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -50%;
+      width: 50%;
+      height: 100%;
+      background: #00ff9f;
+      animation: loadMove 1.5s infinite;
+    }
+
+    @keyframes loadMove {
+      0% { left: -50%; }
+      100% { left: 100%; }
+    }
+
+    /* Matrix Canvas */
     canvas {
       position: fixed;
       top: 0;
@@ -20,6 +69,7 @@
       z-index: -1;
     }
 
+    /* Header + Nav + Content */
     header {
       text-align: center;
       padding: 30px;
@@ -122,13 +172,38 @@
       color: #00ff9f;
       border: 1px solid #00ff9f;
     }
+
+    /* Cờ Việt Nam */
+    #flag {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 150px;
+      height: 100px;
+      background: url('https://upload.wikimedia.org/wikipedia/commons/2/21/Flag_of_Vietnam.svg') no-repeat center center;
+      background-size: contain;
+      animation: flag-wave 2s ease-in-out infinite;
+    }
+
+    @keyframes flag-wave {
+      0%, 100% { transform: translate(-50%, -50%) rotate(0deg); }
+      50% { transform: translate(-50%, -50%) rotate(5deg); }
+    }
   </style>
 </head>
 <body>
 
-  <!-- Matrix effect -->
-  <canvas id="matrixCanvas"></canvas>
+  <!-- Loading Screen -->
+  <div id="loading-screen">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/2/21/Flag_of_Vietnam.svg" alt="Vietnam Flag">
+    <div class="loading-bar"></div>
+  </div>
 
+  <!-- Cờ Việt Nam -->
+  <div id="flag"></div>
+
+  <!-- Content Area -->
   <header>
     <h1>HACKER TOOL DASHBOARD</h1>
   </header>
@@ -147,76 +222,34 @@
   <div class="content">
     <div class="tool-card">
       <h3>SPAM LAN</h3>
-      <a href="https://www.mediafire.com/file/your-spam-lan-link" target="_blank">
-        <button class="download-btn">TẢI NGAY</button>
+      <a href="https://www.mediafire.com/file/8pgzvanie0ftxbi/spamlan.py/file" target="_blank">
+        <button class="download-btn" onclick="loadingStart()">TẢI NGAY</button>
       </a>
     </div>
     <div class="tool-card">
       <h3>SKID RAIDER</h3>
-      <a href="https://www.mediafire.com/file/your-skid-raider-link" target="_blank">
-        <button class="download-btn">TẢI NGAY</button>
+      <a href="https://www.mediafire.com/file/dpqgja1xl0r91er/skid.py/file" target="_blank">
+        <button class="download-btn" onclick="loadingStart()">TẢI NGAY</button>
       </a>
     </div>
-    <div class="tool-card">
-      <h3>BLANK GRABBER</h3>
-      <a href="https://www.mediafire.com/file/your-blank-grabber-link" target="_blank">
-        <button class="download-btn">TẢI NGAY</button>
-      </a>
-    </div>
-    <div class="tool-card">
-      <h3>SIMPLE SCRIPT</h3>
-      <a href="https://www.mediafire.com/file/your-simple-script-link" target="_blank">
-        <button class="download-btn">TẢI NGAY</button>
-      </a>
-    </div>
-    <div class="tool-card">
-      <h3>WEBHOOK SPAMMER</h3>
-      <a href="https://www.mediafire.com/file/your-webhook-link" target="_blank">
-        <button class="download-btn">TẢI NGAY</button>
-      </a>
-    </div>
-    <div class="tool-card">
-      <h3>MINECRAFT DDOS</h3>
-      <a href="https://www.mediafire.com/file/your-minecraft-ddos-link" target="_blank">
-        <button class="download-btn">TẢI NGAY</button>
-      </a>
-    </div>
+    <!-- Các công cụ khác cũng làm tương tự -->
   </div>
 
   <!-- Matrix effect JS -->
   <script>
-    const canvas = document.getElementById("matrixCanvas");
-    const ctx = canvas.getContext("2d");
+    // Function to show and hide loading screen after 3 seconds
+    setTimeout(function() {
+      document.getElementById('loading-screen').style.display = 'none';
+    }, 3000);
 
-    canvas.height = window.innerHeight;
-    canvas.width = window.innerWidth;
-
-    const letters = "01";
-    const fontSize = 16;
-    const columns = canvas.width / fontSize;
-
-    const drops = Array.from({ length: columns }).fill(1);
-
-    function drawMatrix() {
-      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      ctx.fillStyle = "#00ff9f";
-      ctx.font = `${fontSize}px monospace`;
-
-      for (let i = 0; i < drops.length; i++) {
-        const text = letters[Math.floor(Math.random() * letters.length)];
-        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-          drops[i] = 0;
-        }
-
-        drops[i]++;
-      }
+    function loadingStart() {
+      const loadingBar = document.createElement('div');
+      loadingBar.className = 'loading-bar';
+      document.body.appendChild(loadingBar);
+      setTimeout(function() {
+        window.location.href = 'https://www.mediafire.com/file/your-file-link'; // Thay đổi theo link của bạn
+      }, 3000); // Thời gian chờ trước khi chuyển trang
     }
-
-    setInterval(drawMatrix, 50);
   </script>
 
 </body>
